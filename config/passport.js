@@ -1,8 +1,8 @@
-const LocalStrategy = require('passport-local').Strategy;
-const bcrypt = require('bcryptjs');
-const User = require('../db/models/userModel');
+import { Strategy as LocalStrategy } from 'passport-local';
+import bcrypt from 'bcryptjs';
+import User from '../models/User.js';
 
-module.exports = function(passport) {
+export default function initializePassport(passport) {
     passport.use(
         new LocalStrategy(async (username, password, done) => {
             try {
@@ -28,4 +28,4 @@ module.exports = function(passport) {
             done(err, null);
         }
     });
-};
+}

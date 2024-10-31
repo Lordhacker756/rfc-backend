@@ -1,7 +1,7 @@
-const passport = require('passport');
-const User = require('../db/models/userModel');
+import passport from 'passport';
+import User from '../models/User.js';
 
-exports.register = async (req, res) => {
+export const register = async (req, res) => {
     try {
         const { username, password } = req.body;
         let user = await User.findOne({ username });
@@ -15,13 +15,13 @@ exports.register = async (req, res) => {
     }
 };
 
-exports.login = passport.authenticate('local', {
+export const login = passport.authenticate('local', {
     successRedirect: '/dashboard',
     failureRedirect: '/login',
     failureFlash: true,
 });
 
-exports.logout = (req, res) => {
+export const logout = (req, res) => {
     req.logout((err) => {
         if (err) return next(err);
         res.redirect('/');

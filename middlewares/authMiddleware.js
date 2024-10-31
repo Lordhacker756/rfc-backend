@@ -1,5 +1,4 @@
-// middleware/authMiddleware.js
-exports.ensureAuthenticated = (req, res, next) => {
+export const ensureAuthenticated = (req, res, next) => {
     if (req.isAuthenticated()) return next();
-    res.redirect('/auth/login');
+    res.status(401).json({ message: 'You need to be logged in to access this resource' });
 };

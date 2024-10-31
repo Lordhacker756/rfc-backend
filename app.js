@@ -1,19 +1,18 @@
-const express = require('express');
-const session = require('express-session');
-const passport = require('passport');
-const mongoose = require('mongoose');
-const dotenv = require('dotenv');
-const authRoutes = require('./routes/authRoutes');
-const initializePassport = require('./config/passport');
+import express from 'express';
+import session from 'express-session';
+import passport from 'passport';
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+
+import authRoutes from './routes/auth.js';
+import userRoutes from './routes/user.js';
+import initializePassport from './config/passport.js';
 
 dotenv.config();
 const app = express();
 
 // Database connection
-mongoose.connect(process.env.MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-}).then(() => console.log('MongoDB connected'))
+mongoose.connect(process.env.MONGO_URI).then(() => console.log('MongoDB connected'))
   .catch((err) => console.log(err));
 
 // Middleware
@@ -34,5 +33,6 @@ initializePassport(passport);
 
 // Routes
 app.use('/auth', authRoutes);
+app.use('/', userRoutes);
 
-module.exports = app;
+export default app;

@@ -1,12 +1,11 @@
-import { getAuthUser, getUserData, greetUser } from "../controllers/userController.js";
+import { getUserData, greetUser, getAuthUser } from "../controllers/userController.js";
 import express from 'express'
-import {ensureAuthenticated} from '../middlewares/authMiddleware.js';
+import { authenticateToken } from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
 
-router.post('/dashboard', ensureAuthenticated, greetUser);
-router.get('/user/:username', getUserData);
-router.get('/user/profile', getAuthUser);
-
+router.get('/greet', authenticateToken, greetUser);
+router.get('/get/:id', getUserData);
+router.get('/profile', authenticateToken, getAuthUser);
 
 export default router;

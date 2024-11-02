@@ -2,21 +2,21 @@ import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 
 const UserSchema = new mongoose.Schema({
-    name: { type: String},
-    username: { type: String, required: true, unique: true },
+    name: { type: String },
+    username: { type: String, unique: true },
     password: { type: String, required: true },
-    avatar: { type: String},
-    headling: {type: String},
-    backgroundImage: { type: String},
+    avatar: { type: String },
+    headling: { type: String },
+    backgroundImage: { type: String },
     socialAccounts: [
         {
             accountType: String,
             handle: String
         }
     ],
-    whatsapp: {type: String},
-    email: {type: String},
-    address: {type: String},
+    whatsapp: { type: String },
+    email: { type: String, required: true },
+    address: { type: String },
     services: [
         {
             name: String,

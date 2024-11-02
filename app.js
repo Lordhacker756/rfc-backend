@@ -12,6 +12,7 @@ import userRoutes from './routes/user.js';
 import uploadRoutes from './routes/upload.js';
 import { errorHandler } from './errors/errorHandler.js';
 import logger, { consoleLog } from './utils/logger.js';
+import { swaggerDocs } from './utils/swagger.js';
 
 dotenv.config();
 const app = express();
@@ -54,6 +55,9 @@ app.use('/test', (req, res) => {
   })
 })
 app.use('/util', uploadRoutes);
+
+// Add this before the errorHandler
+swaggerDocs(app);
 
 app.use(errorHandler)
 

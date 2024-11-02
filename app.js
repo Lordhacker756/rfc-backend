@@ -5,6 +5,7 @@ import cors from 'cors';
 
 import authRoutes from './routes/auth.js';
 import userRoutes from './routes/user.js';
+import { errorHandler } from './errors/errorHandler.js';
 
 dotenv.config();
 const app = express();
@@ -28,4 +29,5 @@ app.use('/test', (req, res) => {
   })
 })
 
+app.use(errorHandler)
 export default app;

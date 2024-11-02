@@ -1,15 +1,17 @@
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
-import bcrypt from 'bcryptjs';
+import bcrypt from 'bcrypt';
+import { AppError } from '../errors/errorHandler.js';
 
-export const register = async (req, res) => {
+export const register = async (req, res, next) => {
     try {
         const { email, password, name } = req.body;
 
         // Check if user already exists
         const existingUser = await User.findOne({ email });
         if (existingUser) {
-            return res.status(400).json({ message: 'User already exists' });
+            // User already exists, throw a 400 error
+            return next(new AppError('User already exists', 400));
         }
 
         // Create new user
@@ -37,24 +39,27 @@ export const register = async (req, res) => {
             }
         });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        // Pass any internal server error to error handler
+        next(new AppError(error.message, 500));
     }
 };
 
-export const login = async (req, res) => {
+export const login = async (req, res, next) => {
     try {
         const { email, password } = req.body;
 
         // Find user
         const user = await User.findOne({ email });
         if (!user) {
-            return res.status(400).json({ message: 'User not found' });
+            // User not found, throw a 400 error
+            return next(new AppError('User not found', 400));
         }
 
         // Validate password
         const validPassword = await bcrypt.compare(password, user.password);
         if (!validPassword) {
-            return res.status(400).json({ message: 'Invalid password' });
+            // Invalid password, throw a 400 error
+            return next(new AppError('Invalid password', 400));
         }
 
         // Create and assign token
@@ -73,13 +78,14 @@ export const login = async (req, res) => {
             }
         });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        // Pass any internal server error to error handler
+        next(new AppError(error.message, 500));
     }
 };
 
-export const logout = (req, res) => {
+export const logout = (req, res, next) => {
     req.logout((err) => {
-        if (err) return next(err);
+        if (err) return next(new AppError('Logout failed', 500));
         res.redirect('/');
     });
 };

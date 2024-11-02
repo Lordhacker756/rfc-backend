@@ -9,6 +9,7 @@ import helmet from 'helmet';
 
 import authRoutes from './routes/auth.js';
 import userRoutes from './routes/user.js';
+import uploadRoutes from './routes/upload.js';
 import { errorHandler } from './errors/errorHandler.js';
 import logger, { consoleLog } from './utils/logger.js';
 
@@ -35,6 +36,7 @@ const limiter = rateLimit({
 app.use('/auth', limiter);
 app.use('/user', limiter);
 app.use('/test', limiter);
+app.use('/util', limiter);
 
 
 // Middlewares
@@ -51,6 +53,7 @@ app.use('/test', (req, res) => {
     message: "Server running!"
   })
 })
+app.use('/util', uploadRoutes);
 
 app.use(errorHandler)
 

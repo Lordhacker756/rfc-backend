@@ -1,11 +1,14 @@
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import { AppError } from '../errors/errorHandler.js';
+import logger, { consoleLog } from '../utils/logger.js';
 
 export const register = async (req, res, next) => {
     try {
         const { email, password, name } = req.body;
+
+        logger.info(`New registration attempt for user: ${email}`);
 
         // Check if user already exists
         const existingUser = await User.findOne({ email });
@@ -30,6 +33,9 @@ export const register = async (req, res, next) => {
             { expiresIn: '24h' }
         );
 
+        logger.info(`User registered successfully: ${email}`);
+        consoleLog.success(`New user registered: ${name}`);
+
         res.status(201).json({
             token,
             user: {
@@ -39,6 +45,7 @@ export const register = async (req, res, next) => {
             }
         });
     } catch (error) {
+        logger.error('Registration error:', error);
         // Pass any internal server error to error handler
         next(new AppError(error.message, 500));
     }

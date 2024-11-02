@@ -1,12 +1,14 @@
 import User from "../models/User.js";
+import mongoose from 'mongoose';
+import { AppError } from "../errors/errorHandler.js";
 
 export const greetUser = async (req, res) => {
     res.send(`Welcome, ${req.user.name}!`);
 };
 
-export const getUserData = async (req, res) => {
-    if (!req.params.id) {
-        return res.status(400).json({ message: 'Id is required' });
+export const getUserData = async (req, res, next) => {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+        next(new AppError("Invalid user ID format", 400))
     }
     const id = req.params.id;
 
@@ -14,13 +16,13 @@ export const getUserData = async (req, res) => {
         const userObj = await User.findOne({ _id: id });
 
         if (!userObj) {
-            return res.status(404).json({ message: 'User not found' });
+            next(new AppError("User not found!", 404))
         }
 
         res.json(userObj);
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'Server Error' });
+        next(new AppError("Something went wrong", 500))
     }
 };
 
@@ -29,3 +31,10 @@ export const getAuthUser = async (req, res) => {
         user: req.user
     })
 }
+
+export const logout = (req, res) => {
+    req.logout((err) => {
+        if (err) return next(err);
+        res.redirect('/');
+    });
+};

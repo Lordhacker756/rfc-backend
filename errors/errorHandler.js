@@ -1,3 +1,5 @@
+import logger from '../utils/logger.js';
+
 class AppError extends Error {
     constructor(message, statusCode) {
         super(message);
@@ -8,13 +10,30 @@ class AppError extends Error {
 
 const errorHandler = (err, req, res, next) => {
     err.statusCode = err.statusCode || 500;
-    err.status = err.status || "error";
+    err.status = err.status || 'error';
 
-    res.status(err.statusCode).json({
+    // Log the error
+    logger.error({
+        message: err.message,
+        stack: err.stack,
+        statusCode: err.statusCode,
+        path: req.path,
+        method: req.method
+    });
+
+    const response = {
         status: err.status,
         message: err.message,
-        ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
-    })
-}
+        ...(process.env.NODE_ENV === 'development' && { stack: err.stack }),
+    };
+
+    // Add specific error details if they exist (e.g., validation errors)
+    if (err.errors) {
+        response.errors = err.errors;
+    }
+
+    res.status(err.statusCode).json(response);
+};
+
 
 export { AppError, errorHandler };

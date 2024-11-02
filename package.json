@@ -7,9 +7,10 @@
   "type": "module",
   "scripts": {
     "dev": "nodemon server.js",
-    "start": "node server.js"
+    "start": "node server.js",
+    "test": "jest --detectOpenHandles"
   },
-  "author": "Google LLC",
+  "author": "Hamza",
   "license": "Apache-2.0",
   "dependencies": {
     "bcryptjs": "^2.4.3",

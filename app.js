@@ -5,7 +5,6 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import rateLimit from 'express-rate-limit';
-import winston from 'winston';
 import helmet from 'helmet';
 
 import authRoutes from './routes/auth.js';

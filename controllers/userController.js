@@ -8,6 +8,20 @@ export const greetUser = async (req, res) => {
     res.send(`Welcome, ${req.user.name}!`);
 };
 
+export const getUserByJwt = async(req, res, next) => {
+    try {
+        // req.user is already populated by authenticateToken middleware
+        // and password is already excluded by the middleware
+        res.status(200).json({
+            status: 'success',
+            data: req.user
+        });
+    } catch (error) {
+        logger.error('Get user by JWT error:', error);
+        next(new AppError(error.message, 500));
+    }
+};
+
 export const getUserData = async (req, res, next) => {
     if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
         next(new AppError("Invalid user ID format", 400))

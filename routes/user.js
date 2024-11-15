@@ -81,7 +81,7 @@
  *         description: Server error
  */
 
-import { getUserData, greetUser, getAuthUser, updateUser, getUserByUrl } from "../controllers/userController.js";
+import { getUserData, greetUser, getAuthUser, updateUser, getUserByUrl, getUserByJwt } from "../controllers/userController.js";
 import express from 'express'
 import { authenticateToken } from '../middlewares/authMiddleware.js';
 
@@ -92,5 +92,6 @@ router.get('/get/:id', getUserData);
 router.get('/profile', authenticateToken, getAuthUser);
 router.post('/:id', authenticateToken, updateUser);
 router.get('/url/:url', getUserByUrl);
+router.get('/', authenticateToken, getUserByJwt);
 
 export default router;

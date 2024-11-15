@@ -57,7 +57,7 @@ export const updateUser = async (req, res, next) => {
         }
 
         // Fields that are allowed to be updated
-        const allowedUpdates = ['name', 'email', 'password', 'avatar', 'headline', 'backgroundImage', 'socialAccounts', 'whatsapp', 'address', 'services'];
+        const allowedUpdates = ['name', 'email', 'password', 'avatar', 'headline', 'backgroundImage', 'socialAccounts', 'whatsapp', 'address', 'services', 'activeTheme'];
 
         // Filter out any fields that aren't allowed to be updated
         const filteredUpdates = Object.keys(updates)
@@ -84,5 +84,26 @@ export const updateUser = async (req, res, next) => {
     } catch (error) {
         logger.error('Update user error:', error);
         next(new AppError(error.message, 500));
+    }
+};
+
+export const getUserByUrl = async (req, res, next) => {
+    try {
+        const { url } = req.params;
+
+        const user = await User.findOne({ url })
+            .select('-password -__v'); // Exclude sensitive data
+
+        if (!user) {
+            return next(new AppError('User not found', 404));
+        }
+
+        res.status(200).json({
+            status: 'success',
+            data: user
+        });
+    } catch (error) {
+        logger.error('Error fetching user by URL:', error);
+        next(new AppError('Error fetching user data', 500));
     }
 };

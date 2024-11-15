@@ -3,6 +3,7 @@ import User from '../models/User.js';
 import bcrypt from 'bcryptjs';
 import { AppError } from '../errors/errorHandler.js';
 import logger, { consoleLog } from '../utils/logger.js';
+import { generateUniqueUrl } from '../utils/urlGenerator.js';
 
 export const register = async (req, res, next) => {
     try {
@@ -17,11 +18,15 @@ export const register = async (req, res, next) => {
             return next(new AppError('User already exists', 400));
         }
 
+        // Generate unique URL from name
+        const url = await generateUniqueUrl(name);
+
         // Create new user
         const user = new User({
             email,
             password,
-            name
+            name,
+            url
         });
 
         await user.save();
@@ -41,7 +46,8 @@ export const register = async (req, res, next) => {
             user: {
                 id: user._id,
                 email: user.email,
-                name: user.name
+                name: user.name,
+                url: user.url
             }
         });
     } catch (error) {

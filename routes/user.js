@@ -60,9 +60,28 @@
  *         description: Unauthorized
  *       404:
  *         description: User not found
+ * 
+ * /user/url/{url}:
+ *   get:
+ *     summary: Get user by custom URL
+ *     tags: [User]
+ *     parameters:
+ *       - in: path
+ *         name: url
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Custom URL of the user
+ *     responses:
+ *       200:
+ *         description: User data retrieved successfully
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Server error
  */
 
-import { getUserData, greetUser, getAuthUser, updateUser } from "../controllers/userController.js";
+import { getUserData, greetUser, getAuthUser, updateUser, getUserByUrl } from "../controllers/userController.js";
 import express from 'express'
 import { authenticateToken } from '../middlewares/authMiddleware.js';
 
@@ -72,5 +91,6 @@ router.get('/greet', authenticateToken, greetUser);
 router.get('/get/:id', getUserData);
 router.get('/profile', authenticateToken, getAuthUser);
 router.post('/:id', authenticateToken, updateUser);
+router.get('/url/:url', getUserByUrl);
 
 export default router;

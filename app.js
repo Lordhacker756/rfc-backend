@@ -7,6 +7,7 @@ import cors from 'cors';
 import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
 import { engine } from 'express-handlebars';
+import { isBefore } from 'date-fns';
 
 import authRoutes from './routes/auth.js';
 import userRoutes from './routes/user.js';
@@ -74,6 +75,9 @@ app.engine('hbs', engine({
         return str.toLowerCase();
       }
       return '';
+    },
+    isExpired: function (validTill) {
+      return isBefore(new Date(validTill), new Date());
     }
   }
 }));

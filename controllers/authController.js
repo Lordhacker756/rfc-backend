@@ -4,6 +4,8 @@ import bcrypt from 'bcryptjs';
 import { AppError } from '../errors/errorHandler.js';
 import logger, { consoleLog } from '../utils/logger.js';
 import { generateUniqueUrl } from '../utils/urlGenerator.js';
+import { addMonths } from 'date-fns';
+import { isBefore } from 'date-fns';
 
 export const register = async (req, res, next) => {
     try {
@@ -31,8 +33,7 @@ export const register = async (req, res, next) => {
         let validTill;
         if (req.user.role === 'admin') {
             // Admin can set custom validity for moderators
-            validTill = new Date();
-            validTill.setMonth(validTill.getMonth() + (validityMonths || 12)); // Default 12 months
+            validTill = addMonths(new Date(), +validityMonths || 12); // Default 12 months
         } else if (req.user.role === 'moderator') {
             // Moderator's created users inherit moderator's validTill
             validTill = new Date(req.user.validTill);
@@ -83,7 +84,7 @@ export const login = async (req, res, next) => {
 
         // Check if the user's account is not expired
         const today = new Date();
-        if (user.validTill && new Date(user.validTill) < today) {
+        if (user.validTill && isBefore(new Date(user.validTill), today)) {
             return next(new AppError('Account has expired', 403));
         }
 

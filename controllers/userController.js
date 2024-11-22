@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import { AppError } from "../errors/errorHandler.js";
 import bcrypt from 'bcryptjs';
 import logger, { consoleLog } from '../utils/logger.js';
+import { isBefore } from 'date-fns';
 
 export const greetUser = async (req, res) => {
     res.send(`Welcome, ${req.user.name}!`);
@@ -112,19 +113,14 @@ export const getUserByUrl = async (req, res, next) => {
             return next(new AppError('User not found', 404));
         }
 
+        const isExpired = user.validTill ? isBefore(new Date(user.validTill), new Date()) : false;
+
         // Render the Handlebars template instead of sending JSON
         res.render('theme1', {
             layout: false, // Don't use a layout template
             user: {
-                name: user.name,
-                headline: user.headline,
-                avatar: user.avatar || "profile.png",
-                backgroundImage: user.backgroundImage || "banner-test.png",
-                email: user.email,
-                whatsapp: user.whatsapp,
-                address: user.address,
-                socialAccounts: user.socialAccounts,
-                services: user.services
+                ...user.toObject(),
+                isExpired: isExpired
             }
         });
     } catch (error) {

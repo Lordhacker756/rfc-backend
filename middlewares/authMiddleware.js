@@ -20,6 +20,11 @@ export const authenticateToken = async (req, res, next) => {
             return next(new AppError('User not found', 404));
         }
 
+        // Check if account is still valid
+        if (user.validTill && new Date(user.validTill) < new Date()) {
+            return next(new AppError('Account has expired', 403));
+        }
+
         req.user = user;
         next();
     } catch (err) {

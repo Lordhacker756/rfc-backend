@@ -81,9 +81,10 @@
  *         description: Server error
  */
 
-import { getUserData, greetUser, getAuthUser, updateUser, getUserByUrl, getUserByJwt } from "../controllers/userController.js";
+import { getUserData, greetUser, getAuthUser, updateUser, getUserByUrl, getUserByJwt, getAllRegisteredUsers } from "../controllers/userController.js";
 import express from 'express'
 import { authenticateToken } from '../middlewares/authMiddleware.js';
+import { checkRole } from '../middlewares/roleMiddleware.js';
 
 const router = express.Router();
 
@@ -93,5 +94,6 @@ router.get('/profile', authenticateToken, getAuthUser);
 router.post('/:id', authenticateToken, updateUser);
 router.get('/url/:url', getUserByUrl);
 router.get('/', authenticateToken, getUserByJwt);
+router.get('/all', authenticateToken, checkRole('admin', 'moderator'), getAllRegisteredUsers);
 
 export default router;

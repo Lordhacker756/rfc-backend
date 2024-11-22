@@ -9,6 +9,10 @@ const UserSchema = new mongoose.Schema({
     headline: { type: String },
     backgroundImage: { type: String },
     activeTheme: { type: String },
+    validTill: { type: Date, required: true },
+    role: { type: String, enum: ['admin', 'moderator', 'user'], required: true, default: 'user' },
+    isActive: { type: Boolean, default: true },
+    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     socialAccounts: [
         {
             accountType: String,

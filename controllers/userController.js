@@ -8,7 +8,7 @@ export const greetUser = async (req, res) => {
     res.send(`Welcome, ${req.user.name}!`);
 };
 
-export const getUserByJwt = async(req, res, next) => {
+export const getUserByJwt = async (req, res, next) => {
     try {
         // req.user is already populated by authenticateToken middleware
         // and password is already excluded by the middleware
@@ -106,18 +106,50 @@ export const getUserByUrl = async (req, res, next) => {
         const { url } = req.params;
 
         const user = await User.findOne({ url })
-            .select('-password -__v'); // Exclude sensitive data
+            .select('-password -__v');
 
         if (!user) {
             return next(new AppError('User not found', 404));
         }
 
-        res.status(200).json({
-            status: 'success',
-            data: user
+        // Render the Handlebars template instead of sending JSON
+        res.render('theme1', {
+            layout: false, // Don't use a layout template
+            user: {
+                name: user.name,
+                headline: user.headline,
+                avatar: user.avatar || "profile.png",
+                backgroundImage: user.backgroundImage || "banner-test.png",
+                email: user.email,
+                whatsapp: user.whatsapp,
+                address: user.address,
+                socialAccounts: user.socialAccounts,
+                services: user.services
+            }
         });
     } catch (error) {
         logger.error('Error fetching user by URL:', error);
         next(new AppError('Error fetching user data', 500));
     }
 };
+
+export const getAllRegisteredUsers = async (req, res, next) => {
+    try {
+        const usersRegisteredByMod = await User.find({
+            createdBy: req.user._id
+        });
+
+        logger.info("Mod created accounts fetched", {
+            modUser: req.user._id,
+            accounts: usersRegisteredByMod
+        });
+
+        res.status(200).json({
+            status: 'success',
+            data: usersRegisteredByMod
+        });
+    } catch (err) {
+        logger.error("Error in getting accounts created by Moderator: ", err);
+        next(new AppError('Error fetching mod created accounts', 500));
+    }
+}

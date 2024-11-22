@@ -6,6 +6,7 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
+import { engine } from 'express-handlebars';
 
 import authRoutes from './routes/auth.js';
 import userRoutes from './routes/user.js';
@@ -60,6 +61,19 @@ swaggerDocs(app);
 
 app.use(errorHandler)
 
+// Configure Handlebars
+app.engine('hbs', engine({ extname: '.hbs' }));
+app.set('view engine', 'hbs');
+app.set('views', './views');
 
+// Register custom Handlebars helper
+app.engine('hbs', engine({
+  extname: '.hbs',
+  helpers: {
+    toLowerCase: function (str) {
+      return str.toLowerCase();
+    }
+  }
+}));
 
 export default app;

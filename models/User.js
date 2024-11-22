@@ -16,7 +16,7 @@ const UserSchema = new mongoose.Schema({
     socialAccounts: [
         {
             accountType: String,
-            handle: String
+            profileUrl: String
         }
     ],
     whatsapp: { type: String },

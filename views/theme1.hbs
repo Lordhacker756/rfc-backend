@@ -175,9 +175,9 @@
     <!-- Social Media Links Section -->
     <div class="container social-icons">
         {{#each user.socialAccounts}}
-            <a href="{{this.handle}}" target="_blank">
-                <img src="https://img.icons8.com/color/48/{{toLowerCase this.accountType}}.png" 
-                     alt="{{this.accountType}}">
+            <a href="{{lookup this 'profileUrl'}}" target="_blank">
+                <img src="https://img.icons8.com/color/48/{{toLowerCase (lookup this 'accountType')}}.png" 
+                     alt="{{lookup this 'accountType'}}">
             </a>
         {{/each}}
     </div>
@@ -218,11 +218,11 @@
             <div id="servicesContainer">
                 {{#each user.services}}
                 <div class="bg-dark p-4 mt-4">
-                    <h5 class="fw-bold">{{this.name}}</h5>
-                    <img src="{{this.productImage}}" alt="{{this.name}}" class="img-fluid mb-3">
-                    <p class="text-muted">{{this.description}}</p>
+                    <h5 class="fw-bold">{{lookup this 'name'}}</h5>
+                    <img src="{{lookup this 'productImage'}}" alt="{{lookup this 'name'}}" class="img-fluid mb-3">
+                    <p class="text-muted">{{lookup this 'description'}}</p>
                     <div class="d-flex align-items-center">
-                        <span class="me-3">Price: ${{this.price}}</span>
+                        <span class="me-3">Price: ${{lookup this 'price'}}</span>
                         <button class="btn btn-success">Enquiry</button>
                     </div>
                 </div>

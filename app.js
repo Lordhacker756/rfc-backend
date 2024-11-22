@@ -62,18 +62,22 @@ swaggerDocs(app);
 app.use(errorHandler)
 
 // Configure Handlebars
-app.engine('hbs', engine({ extname: '.hbs' }));
-app.set('view engine', 'hbs');
-app.set('views', './views');
-
-// Register custom Handlebars helper
 app.engine('hbs', engine({
   extname: '.hbs',
+  runtimeOptions: {
+    allowProtoPropertiesByDefault: true,
+    allowProtoMethodsByDefault: true
+  },
   helpers: {
     toLowerCase: function (str) {
-      return str.toLowerCase();
+      if (str && typeof str === 'string') {
+        return str.toLowerCase();
+      }
+      return '';
     }
   }
 }));
+app.set('view engine', 'hbs');
+app.set('views', './views');
 
 export default app;
